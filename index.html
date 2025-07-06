@@ -78,6 +78,33 @@
             display: flex;
         }
 
+        /* Subtle hover hint */
+        .hover-hint {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #dc4741;
+            opacity: 0.6;
+            font-style: italic;
+            font-family: 'Times New Roman', serif;
+            z-index: 15;
+            animation: gentleFade 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gentleFade {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Hide hint after user starts interacting */
+        .container.interacted .hover-hint {
+            opacity: 0;
+            transition: opacity 1s ease-out;
+        }
+
         /* Exact positioning based on the illustration */
         
         /* Central SUBTEXT */
@@ -171,7 +198,7 @@
             height: 100px;
         }
 
-        /* NEW: Signature - lower right corner */
+        /* Signature - your updated positioning */
         .signature {
             position: absolute;
             bottom: 20px;
@@ -246,6 +273,9 @@
 </head>
 <body>
     <div class="container">
+        <!-- Subtle hover hint -->
+        <div class="hover-hint">hover to listen</div>
+
         <!-- SVG for connecting lines - FIXED all missing lines -->
         <svg class="connections-svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
             <!-- Gift to SUBTEXT - thinner -->
@@ -345,7 +375,7 @@
             <button class="play-button">▶</button>
         </div>
 
-        <!-- NEW: Signature in lower right corner -->
+        <!-- Signature -->
         <div class="signature">
             <img src="signature.png" alt="With love, from charles to pilgrim guy">
         </div>
@@ -356,16 +386,24 @@
             constructor() {
                 this.currentAudio = null;
                 this.currentButton = null;
+                this.hasInteracted = false;
                 this.init();
             }
 
             init() {
                 const playButtons = document.querySelectorAll('.play-button');
+                const container = document.querySelector('.container');
 
                 // Play button clicks
                 playButtons.forEach(button => {
                     button.addEventListener('click', (e) => {
                         e.stopPropagation();
+                        
+                        // Mark as interacted to hide hint
+                        if (!this.hasInteracted) {
+                            this.hasInteracted = true;
+                            container.classList.add('interacted');
+                        }
                         
                         // If this button is already playing, pause it
                         if (this.currentButton === button && this.currentAudio && !this.currentAudio.paused) {
@@ -383,6 +421,16 @@
                         const item = button.parentElement;
                         const audioFile = item.dataset.audio;
                         this.playAudio(audioFile, button);
+                    });
+                });
+
+                // Also hide hint on first hover
+                document.querySelectorAll('.concept-item').forEach(item => {
+                    item.addEventListener('mouseenter', () => {
+                        if (!this.hasInteracted) {
+                            this.hasInteracted = true;
+                            container.classList.add('interacted');
+                        }
                     });
                 });
             }
