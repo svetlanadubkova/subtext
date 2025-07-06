@@ -171,6 +171,23 @@
             height: 100px;
         }
 
+        /* NEW: Signature - lower right corner */
+        .signature {
+            position: absolute;
+            bottom: 20px;
+            right: 250px;
+            width: 300px;
+            height: 60px;
+            z-index: 15;
+            opacity: 0.7;
+        }
+
+        .signature img {
+            max-width: 175%;
+            max-height: 175%;
+            object-fit: contain;
+        }
+
         /* SVG for connecting lines */
         .connections-svg {
             position: absolute;
@@ -326,6 +343,11 @@
         <div class="concept-item cheeks-blushing" data-audio="Blushing cheeks image.m4a" data-title="cheeks blushing">
             <img src="cheeks blushing.png" alt="Cheeks Blushing">
             <button class="play-button">▶</button>
+        </div>
+
+        <!-- NEW: Signature in lower right corner -->
+        <div class="signature">
+            <img src="signature.png" alt="With love, from charles to pilgrim guy">
         </div>
     </div>
 
