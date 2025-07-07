@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>subtext</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #fcfcf7;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .concept-item {
+            position: absolute;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .concept-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Elegant, hand-drawn style play button */
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(252, 252, 247, 0.98);
+            color: #e54c3c;
+            border: 1.5px solid #e54c3c;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 8px rgba(229, 76, 60, 0.15);
+            z-index: 20;
+            transition: all 0.3s ease;
+            /* Hand-drawn feel with slight irregularity */
+            border-radius: 48% 52% 50% 48%;
+        }
+
+        .play-button:hover {
+            background: #fcfcf7;
+            transform: translate(-50%, -50%) scale(1.08);
+            box-shadow: 0 2px 12px rgba(229, 76, 60, 0.25);
+            border-width: 2px;
+        }
+
+        .play-button.playing {
+            display: flex;
+            background: rgba(229, 76, 60, 0.1);
+            border-width: 2px;
+        }
+
+        .concept-item:hover .play-button {
+            display: flex;
+        }
+
+        /* Redacted text styling */
+        .redacted-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 16px;
+            color: #dc4741;
+            display: none;
+            z-index: 20;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .concept-item:hover .redacted-text {
+            display: block;
+        }
+
+        /* Subtle hover hint */
+        .hover-hint {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #dc4741;
+            opacity: 0.6;
+            font-style: italic;
+            font-family: 'Times New Roman', serif;
+            z-index: 15;
+            animation: gentleFade 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gentleFade {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Hide hint after user starts interacting */
+        .container.interacted .hover-hint {
+            opacity: 0;
+            transition: opacity 1s ease-out;
+        }
+
+        /* Exact positioning based on the illustration */
+        
+        /* Central SUBTEXT */
+        .subtext-central {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 60px;
+            z-index: 5;
+        }
+
+        /* Gift box - top center */
+        .gifting {
+            left: 50%;
+            top: 8%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+        }
+
+        /* Courting - left side - bigger */
+        .courting {
+            left: 15%;
+            top: 25%;
+            width: 160px;
+            height: 90px;
+        }
+
+        /* Experience in forbidden love - MOVED DOWN JUST A TAD */
+        .experience-forbidden {
+            right: 15%;
+            top: 29%;
+            width: 300px;
+            height: 160px;
+        }
+
+        /* Overt vs Covert - left side, below courting */
+        .overt-covert {
+            left: 8%;
+            top: 45%;
+            width: 200px;
+            height: 140px;
+        }
+
+        /* Plausible deniability - bottom left */
+        .plausible-deniability {
+            left: 12%;
+            bottom: 15%;
+            width: 180px;
+            height: 120px;
+        }
+
+        /* What should be said - higher and more to the left */
+        .what-should-be-said {
+            left: 35%;
+            bottom: 25%;
+            width: 200px;
+            height: 100px;
+        }
+
+        /* Protect loved ones - closer to subtext */
+        .protect-loved-ones {
+            right: 15%;
+            bottom: 25%;
+            width: 260px;
+            height: 140px;
+        }
+
+        /* Things should be left unsaid - close to cheeks blushing */
+        .things-left-unsaid {
+            left: 30%;
+            bottom: 8%;
+            width: 180px;
+            height: 100px;
+        }
+
+        /* Cheeks blushing - brought up a good amount */
+        .cheeks-blushing {
+            left: 55%;
+            bottom: 18%;
+            width: 140px;
+            height: 120px;
+        }
+
+        /* Loaded actions - positioned near the gift */
+        .loaded-actions {
+            left: 65%;
+            top: 10%;
+            width: 140px;
+            height: 100px;
+        }
+
+        /* Signature - your updated positioning */
+        .signature {
+            position: absolute;
+            bottom: 20px;
+            right: 250px;
+            width: 300px;
+            height: 60px;
+            z-index: 15;
+            opacity: 0.7;
+        }
+
+        .signature img {
+            max-width: 175%;
+            max-height: 175%;
+            object-fit: contain;
+        }
+
+        /* SVG for connecting lines */
+        .connections-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Even thinner, slightly lighter lines */
+        .connection-line {
+            stroke: #dc4741;
+            stroke-width: 0.15;
+            fill: none;
+            opacity: 0.7;
+            stroke-linecap: round;
+        }
+
+        .branch-line {
+            stroke: #dc4741;
+            stroke-width: 0.12;
+            fill: none;
+            opacity: 0.6;
+            stroke-linecap: round;
+        }
+
+        /* Special thinner line */
+        .thin-line {
+            stroke: #dc4741;
+            stroke-width: 0.08;
+            fill: none;
+            opacity: 0.6;
+            stroke-linecap: round;
+        }
+
+        /* Extra thin line for gift to subtext */
+        .extra-thin-line {
+            stroke: #dc4741;
+            stroke-width: 0.06;
+            fill: none;
+            opacity: 0.6;
+            stroke-linecap: round;
+        }
+
+        /* Special thicker line for cheeks connection */
+        .thicker-line {
+            stroke: #dc4741;
+            stroke-width: 0.12;
+            fill: none;
+            opacity: 0.7;
+            stroke-linecap: round;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Subtle hover hint -->
+        <div class="hover-hint">hover to listen</div>
+
+        <!-- SVG for connecting lines - FIXED all missing lines -->
+        <svg class="connections-svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <!-- Gift to SUBTEXT - thinner -->
+            <path class="extra-thin-line" d="M 50,26 Q 49,38 50,44" />
+            
+            <!-- Gift to Loaded Actions -->
+            <path class="connection-line" d="M 56,18 Q 62,16 68,15" />
+            
+            <!-- FIXED: Courting to SUBTEXT - visible curved line -->
+            <path class="connection-line" d="M 29,35 Q 36,42 42,48" />
+            
+            <!-- FIXED: Experience forbidden to SUBTEXT - shorter and curved -->
+            <path class="connection-line" d="M 72,44 Q 65,46 58,48" />
+            
+            <!-- What should be said to SUBTEXT -->
+            <path class="thin-line" d="M 45,65 Q 47,58 50,52" />
+            
+            <!-- Protect loved ones to SUBTEXT -->
+            <path class="connection-line" d="M 70,62 Q 62,58 56,54" />
+            
+            <!-- What should be said to Things left unsaid -->
+            <path class="thin-line" d="M 40,70 Q 35,75 35,78" />
+            
+            <!-- Things left unsaid to Cheeks blushing - adjusted for new position -->
+            <path class="thicker-line" d="M 44,85 Q 52,80 58,78" />
+            
+            <!-- BRANCHES -->
+            <!-- Courting branches to Overt/Covert -->
+            <path class="branch-line" d="M 22,40 Q 20,44 20,47" />
+            
+            <!-- FIXED: Overt/Covert branches to Plausible Deniability - MORE LEFT -->
+            <path class="branch-line" d="M 15,58 Q 14,62 15,65" />
+        </svg>
+
+        <!-- Central SUBTEXT (not interactive) -->
+        <div class="concept-item subtext-central">
+            <img src="2. subtext.png" alt="Subtext">
+        </div>
+
+        <!-- Gifting -->
+        <div class="concept-item gifting" data-audio="Gifts.m4a" data-title="gifting">
+            <img src="gifting.png" alt="Gifting">
+            <button class="play-button">▶</button>
+        </div>
+
+        <!-- Loaded Actions -->
+        <div class="concept-item loaded-actions" data-audio="Gifts Kristen loaded actions.m4a" data-title="loaded actions">
+            <img src="loaded actions.png" alt="Loaded Actions">
+            <button class="play-button">▶</button>
+        </div>
+
+        <!-- Courting -->
+        <div class="concept-item courting" data-audio="courting.m4a" data-title="courting">
+            <img src="1. courting.png" alt="Courting">
+            <button class="play-button">▶</button>
+        </div>
+
+        <!-- Experience in Forbidden Love - REDACTED -->
+        <div class="concept-item experience-forbidden" data-title="experience in forbidden love">
+            <img src="i have a lot of experience in my favorite genre of love forbidden.png" alt="Experience in Forbidden Love">
+            <div class="redacted-text">redacted</div>
+        </div>
+
+        <!-- Overt vs Covert Courting -->
+        <div class="concept-item overt-covert" data-audio="Overt vs covert.m4a" data-title="overt vs covert courting">
+            <img src="overt vs covert courting.png" alt="Overt vs Covert Courting">
+            <button class="play-button">▶</button>
+        </div>
+
+        <!-- Plausible Deniability vs Full Send -->
+        <div class="concept-item plausible-deniability" data-audio="Plausible deniability vs full send.m4a" data-title="plausible deniability vs full send">
+            <img src="plausible deniability vs full send.png" alt="Plausible Deniability vs Full Send">
+            <button class="play-button">▶</button>
+        </div>
+
+        <!-- What Should Be Said and Unsaid - REDACTED -->
+        <div class="concept-item what-should-be-said" data-title="what should be said & unsaid">
+            <img src="what should be said and unsaid.png" alt="What Should Be Said and Unsaid">
+            <div class="redacted-text">redacted</div>
+        </div>
+
+        <!-- Protect Loved Ones from Crush Psychosis -->
+        <div class="concept-item protect-loved-ones" data-audio="Crush psychosis.m4a" data-title="protect loved ones from crush psychosis">
+            <img src="you must protect loved ones from crush psychosis.png" alt="Protect Loved Ones from Crush Psychosis">
+            <button class="play-button">▶</button>
+        </div>
+
+        <!-- Things Should Be Left Unsaid -->
+        <div class="concept-item things-left-unsaid" data-audio="I can feel it flooding my body too direct.m4a" data-title="things should be left unsaid">
+            <img src="I can feel it flooding my body too direct.png" alt="Things Should Be Left Unsaid">
+            <button class="play-button">▶</button>
+        </div>
+
+        <!-- Cheeks Blushing -->
+        <div class="concept-item cheeks-blushing" data-audio="Blushing cheeks image.m4a" data-title="cheeks blushing">
+            <img src="cheeks blushing.png" alt="Cheeks Blushing">
+            <button class="play-button">▶</button>
+        </div>
+
+        <!-- Signature -->
+        <div class="signature">
+            <img src="menarefrommars.png" alt="With love, from charles to pilgrim guy">
+        </div>
+    </div>
+
+    <script>
+        class SimpleAudioPlayer {
+            constructor() {
+                this.currentAudio = null;
+                this.currentButton = null;
+                this.hasInteracted = false;
+                this.init();
+            }
+
+            init() {
+                const playButtons = document.querySelectorAll('.play-button');
+                const container = document.querySelector('.container');
+
+                // Play button clicks
+                playButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        
+                        // Mark as interacted to hide hint
+                        if (!this.hasInteracted) {
+                            this.hasInteracted = true;
+                            container.classList.add('interacted');
+                        }
+                        
+                        // If this button is already playing, pause it
+                        if (this.currentButton === button && this.currentAudio && !this.currentAudio.paused) {
+                            this.pauseAudio();
+                            return;
+                        }
+                        
+                        // If this button was paused, resume it
+                        if (this.currentButton === button && this.currentAudio && this.currentAudio.paused) {
+                            this.resumeAudio();
+                            return;
+                        }
+                        
+                        // Otherwise, play new audio
+                        const item = button.parentElement;
+                        const audioFile = item.dataset.audio;
+                        this.playAudio(audioFile, button);
+                    });
+                });
+
+                // Also hide hint on first hover for all interactive items
+                document.querySelectorAll('.concept-item').forEach(item => {
+                    item.addEventListener('mouseenter', () => {
+                        if (!this.hasInteracted) {
+                            this.hasInteracted = true;
+                            container.classList.add('interacted');
+                        }
+                    });
+                });
+            }
+
+            playAudio(audioFile, button) {
+                // Stop current audio if playing different audio
+                if (this.currentAudio && this.currentButton !== button) {
+                    this.currentAudio.pause();
+                    if (this.currentButton) {
+                        this.currentButton.textContent = '▶';
+                        this.currentButton.classList.remove('playing');
+                    }
+                }
+
+                // Create new audio
+                const audio = new Audio(audioFile);
+                this.currentAudio = audio;
+                this.currentButton = button;
+
+                button.textContent = '⏸';
+                button.classList.add('playing');
+
+                audio.addEventListener('play', () => {
+                    button.textContent = '⏸';
+                    button.classList.add('playing');
+                });
+
+                audio.addEventListener('pause', () => {
+                    button.textContent = '▶';
+                    button.classList.remove('playing');
+                });
+
+                audio.addEventListener('ended', () => {
+                    button.textContent = '▶';
+                    button.classList.remove('playing');
+                    this.currentAudio = null;
+                    this.currentButton = null;
+                });
+
+                audio.addEventListener('error', (e) => {
+                    console.error('Audio error:', e);
+                    button.textContent = '▶';
+                    button.classList.remove('playing');
+                    this.currentAudio = null;
+                    this.currentButton = null;
+                });
+
+                audio.play();
+            }
+
+            pauseAudio() {
+                if (this.currentAudio && !this.currentAudio.paused) {
+                    this.currentAudio.pause();
+                }
+            }
+
+            resumeAudio() {
+                if (this.currentAudio && this.currentAudio.paused) {
+                    this.currentAudio.play();
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new SimpleAudioPlayer();
+        });
+    </script>
+</body>
+</html>
