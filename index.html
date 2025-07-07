@@ -78,6 +78,26 @@
             display: flex;
         }
 
+        /* Redacted text styling */
+        .redacted-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 16px;
+            color: #dc4741;
+            display: none;
+            z-index: 20;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .concept-item:hover .redacted-text {
+            display: block;
+        }
+
         /* Subtle hover hint */
         .hover-hint {
             position: absolute;
@@ -333,10 +353,10 @@
             <button class="play-button">▶</button>
         </div>
 
-        <!-- Experience in Forbidden Love -->
-        <div class="concept-item experience-forbidden" data-audio="Forbidden is my favorite genre of love.m4a" data-title="experience in forbidden love">
+        <!-- Experience in Forbidden Love - REDACTED -->
+        <div class="concept-item experience-forbidden" data-title="experience in forbidden love">
             <img src="i have a lot of experience in my favorite genre of love forbidden.png" alt="Experience in Forbidden Love">
-            <button class="play-button">▶</button>
+            <div class="redacted-text">redacted</div>
         </div>
 
         <!-- Overt vs Covert Courting -->
@@ -351,10 +371,10 @@
             <button class="play-button">▶</button>
         </div>
 
-        <!-- What Should Be Said and Unsaid -->
-        <div class="concept-item what-should-be-said" data-audio="things unsaid.m4a" data-title="what should be said & unsaid">
+        <!-- What Should Be Said and Unsaid - REDACTED -->
+        <div class="concept-item what-should-be-said" data-title="what should be said & unsaid">
             <img src="what should be said and unsaid.png" alt="What Should Be Said and Unsaid">
-            <button class="play-button">▶</button>
+            <div class="redacted-text">redacted</div>
         </div>
 
         <!-- Protect Loved Ones from Crush Psychosis -->
@@ -377,7 +397,7 @@
 
         <!-- Signature -->
         <div class="signature">
-            <img src="signature.png" alt="With love, from charles to pilgrim guy">
+            <img src="menarefrommars.png" alt="With love, from charles to pilgrim guy">
         </div>
     </div>
 
@@ -424,7 +444,7 @@
                     });
                 });
 
-                // Also hide hint on first hover
+                // Also hide hint on first hover for all interactive items
                 document.querySelectorAll('.concept-item').forEach(item => {
                     item.addEventListener('mouseenter', () => {
                         if (!this.hasInteracted) {
